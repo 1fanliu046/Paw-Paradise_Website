@@ -1,0 +1,400 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Paw Paradise</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <style>
+        .site-header { text-align: center; padding: 40px 20px; }
+        .site-header h1 { font-size: 48px; color: #ff9eb5; margin: 0; }
+        .site-header p { font-size: 20px; color: #666; }
+        .item.thumb h2 { display: none; }
+        
+/*卡片样式 */
+.items {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    padding: 0; 
+    width: 100%;
+    margin: 0 auto;
+}
+
+.item.thumb {
+    background: white;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    border-right: 1px solid rgba(255, 158, 181, 0.1);
+    border-bottom: 1px solid rgba(255, 158, 181, 0.1);
+}
+
+.item.thumb:hover {
+    background-color: rgba(255, 158, 181, 0.02);
+    transform: scale(1.02);
+    z-index: 2;
+    box-shadow: 0 4px 15px rgba(255, 158, 181, 0.2);
+    border-color: transparent;
+}
+
+.item.thumb .image {
+    width: 100%;
+    display: block;
+    line-height: 0;
+}
+
+.item.thumb .image img {
+    width: 100%;
+    height: 120px;  
+    object-fit: cover;
+    display: block;
+}
+
+/* 猫咪信息 */
+.item.thumb .cat-info {
+    padding: 10px;  
+    text-align: left;
+    background: white;
+} 
+
+.item.thumb .cat-info h3 {
+    margin: 0 0 3px;
+    color: #ff9eb5;
+    font-size: 16px;  
+    font-weight: 500;
+}
+
+.item.thumb .cat-info .meta {
+    margin: 3px 0;
+    color: #666;
+    font-size: 12px;  
+}
+
+.item.thumb .cat-info .desc {
+    margin: 6px 0 0;  
+    color: #888;
+    font-size: 11px;  
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+        
+/* 视频 */
+        .video-corner {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 120px; height: 80px; border-radius: 10px;
+            overflow: hidden; cursor: pointer; border: 2px solid white;
+            transition: 0.3s; z-index: 100;
+        }
+        .video-corner:hover { width: 400px; height: 225px; }
+        .video-corner iframe { width: 100%; height: 100%; }
+
+/* 模态框样式 */  
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            animation: slideDown 0.4s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #ff9eb5;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close-modal:hover {
+            color: #ff7a9e;
+            background-color: #fff0f3;
+            transform: rotate(90deg);
+        }
+        
+        #modalImage {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 3px solid #ff9eb5;
+        }
+        
+        .modal h2 {
+            color: #ff9eb5;
+            margin: 0 0 5px;
+            font-size: 32px;
+        }
+        
+        .modal .meta {
+            color: #666;
+            font-size: 18px;
+            margin: 5px 0;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ff9eb5;
+        }
+        
+        .modal .desc {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.8;
+            margin: 20px 0;
+            padding: 15px;
+            background: #fff9fa;
+            border-radius: 12px;
+        }
+        
+        .modal button {
+            background: #ff9eb5;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .modal button:hover {
+            background: #ff7a9e;
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(255, 158, 181, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .video-corner {
+                width: 80px; 
+                height: 60px;
+                bottom: 10px; 
+                right: 10px;
+            }
+            .video-corner:hover {
+                width: 200px; 
+                height: 112px;
+            }
+            .items {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .item.thumb:nth-child(5n) {
+                border-right: 1px solid rgba(255, 158, 181, 0.1);
+            }
+            .item.thumb:nth-child(2n) {
+                border-right: none;
+            }
+            .modal-content {
+                margin: 10% auto;
+                padding: 20px;
+            }
+        }
+        
+        #footer { text-align: center; padding: 30px; color: #999; }
+    </style>
+</head>
+<body>
+
+<!-- 视频 -->
+    <div class="video-corner">
+        <iframe src="https://www.youtube.com/embed/nOyXiFFXYo4?autoplay=1&mute=1" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div id="wrapper">
+        <section id="main">
+            
+<!-- 标题-->
+            <div class="site-header">
+                <h1>Paw Paradise</h1>
+                <p>Adopt a friend, save a heart</p>
+            </div>
+            
+<!-- 第一行 -->
+    <div class="items">
+        <article class="item thumb span-2" data-cat='{"name":"Sunny","meta":"Girl · Orange Cat","desc":"Under treatment and nearly blind, unable to see its future owner.","image":"images/01.jpg"}'>
+            <a href="#" class="image" onclick="return false;"><img src="images/01.jpg" alt="Sunny"></a>
+            <div class="cat-info">
+                <h3>Sunny</h3>
+                <div class="meta">Girl · Orange Cat</div>
+                <div class="desc">Under treatment and nearly blind, unable to see its future owner.</div>
+                </div>
+        </article>
+                
+         <article class="item thumb span-2" data-cat='{"name":"Yone","meta":"Girl · Calico Cat","desc":"Amputation of the hind limb, lively and affectionate","image":"images/02.jpg"}'>
+            <a href="#" class="image" onclick="return false;"><img src="images/02.jpg" alt="Yone"></a>
+            <div class="cat-info">
+                <h3>Yone</h3>
+                <div class="meta">Girl · Calico Cat</div>
+                 <div class="desc">Amputation of the hind limb, lively and affectionate</div>
+                 </div>
+        </article>
+                
+        <article class="item thumb span-1" data-cat='{"name":"Sugar","meta":"Boy · Chinese Li Hua","desc":"A cute and strong little cat","image":"images/03.jpg"}'>
+            <a href="#" class="image" onclick="return false;"><img src="images/03.jpg" alt="Sugar"></a>
+            <div class="cat-info">
+                <h3>Sugar</h3>
+                <div class="meta">Boy · Chinese Li Hua</div>
+                <div class="desc">A cute and strong little cat</div>
+                </div>
+        </article>
+                
+        <article class="item thumb span-2" data-cat='{"name":"Hami Melon","meta":"Boy · Orange Cat","desc":"Not very brave, but very cute","image":"images/04.jpg"}'>
+            <a href="#" class="image" onclick="return false;"><img src="images/04.jpg" alt="Hami Melon"></a>
+            <div class="cat-info">
+                <h3>Hami Melon</h3>
+                <div class="meta">Boy · Orange Cat</div>
+                <div class="desc">Not very brave, but very cute</div>
+                </div>
+        </article>
+                
+    </div>
+            
+    <!-- 第二行 -->
+    <div class="items">
+        <article class="item thumb span-1" data-cat='{"name":"Sir","meta":"Boy · Cow Cat","desc":"He has a high level of appearance and is a bit aloof","image":"images/06.jpg"}'>
+            <a href="#" class="image" onclick="return false;"><img src="images/06.jpg" alt="Sir"></a>
+            <div class="cat-info">
+                <h3>Sir</h3>
+                <div class="meta">Boy · Cow Cat</div>
+                <div class="desc">He has a high level of appearance and is a bit aloof</div>
+                </div>
+        </article>
+                
+        <article class="item thumb span-2" data-cat='{"name":"Big Bai","meta":"Girl · White Cat","desc":"It requires a little patience. Once you get used to it, you can touch it","image":"images/07.jpg"}'>
+            <a href="#" class="image" onclick="return false;"><img src="images/07.jpg" alt="Big Bai"></a>
+            <div class="cat-info">
+                <h3>Big Bai</h3>
+                <div class="meta">Girl · White Cat</div>
+                <div class="desc">It requires a little patience. Once you get used to it, you can touch it</div>
+                </div>
+        </article>
+                
+        <article class="item thumb span-2" data-cat='{"name":"Eating","meta":"Girl · Chinese Li Hua","desc":"Super well-behaved and approachable","image":"images/08.jpg"}'>
+            <a href="#" class="image" onclick="return false;"><img src="images/08.jpg" alt="Eating"></a>
+            <div class="cat-info">
+                <h3>Eating</h3>
+                <div class="meta">Girl · Chinese Li Hua</div>
+                <div class="desc">Super well-behaved and approachable</div>
+                </div>
+        </article>
+                
+        <article class="item thumb span-1" data-cat='{"name":"Rice Noodles","meta":"Girl · White Cat","desc":"Under treatment for an armpit injury, clean and tidy, just not very white.","image":"images/09.jpg"}'>
+            <a href="#" class="image" onclick="return false;"><img src="images/09.jpg" alt="Rice Noodles"></a>
+            <div class="cat-info">
+                <h3>Rice Noodles</h3>
+                <div class="meta">Girl · White Cat</div>
+                <div class="desc">Under treatment for an armpit injury, clean and tidy, just not very white.</div>
+                </div>
+        </article>
+
+    </div>
+            
+        </section>
+        <section id="footer">
+            <p>© 2026 Paw Paradise</p>
+        </section>
+    </div>
+
+    <!-- 猫咪信息模态框-->
+    <div id="catModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <img id="modalImage" src="" alt="猫咪照片">
+            <h2 id="modalName"></h2>
+            <div id="modalMeta" class="meta"></div>
+            <div id="modalDesc" class="desc"></div>
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+    // 获取模态框元素
+    var modal = document.getElementById('catModal');
+    var span = document.getElementsByClassName('close-modal')[0];
+
+    // 关闭模态框函数
+    function closeModal() {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // 恢复滚动
+    }
+
+    // 点击 × 关闭
+    span.onclick = closeModal;
+
+    // 点击模态框外部关闭
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    function showCatInfo(catData) {
+        document.getElementById('modalImage').src = catData.image;
+        document.getElementById('modalImage').alt = catData.name;
+        document.getElementById('modalName').textContent = catData.name;
+        document.getElementById('modalMeta').textContent = catData.meta;
+        document.getElementById('modalDesc').textContent = catData.desc;
+        
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; 
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var catCards = document.querySelectorAll('.item.thumb');
+        catCards.forEach(function(card) {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                var catData = JSON.parse(this.getAttribute('data-cat'));
+                showCatInfo(catData);
+            });
+        });
+    });
+    </script>
+
+<script src="assets/js/jquery.min.js"></script>    
+</body>
+</html>
